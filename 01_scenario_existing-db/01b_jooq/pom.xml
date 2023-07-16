@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.svenehrke</groupId>
-  <artifactId>demo-jooq-pomgen</artifactId>
+  <artifactId>01b_jooq</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>demo-jooq-pomgen</name>
+  <name>01b_jooq</name>
   <url>http://maven.apache.org</url>
 
   <properties>
@@ -15,7 +15,7 @@
       <testcontainers.version>1.17.6</testcontainers.version>
       <postgres.version>42.6.0</postgres.version>
       <db.username>postgres</db.username>
-      <db.password>postgres</db.password>
+      <db.password>sakila</db.password>
       <org.jooq.groupId>org.jooq</org.jooq.groupId>
       <org.jooq.version>3.18.5</org.jooq.version>
   </properties>
@@ -82,10 +82,11 @@
                         </goals>
                         <configuration>
                             <source>
-                                db = new org.testcontainers.containers.PostgreSQLContainer("postgres:latest")
+                                db = new org.testcontainers.containers.PostgreSQLContainer(org.testcontainers.utility.DockerImageName.parse("simas/postgres-sakila").asCompatibleSubstituteFor("postgres"))
                                         .withUsername("${db.username}")
                                         .withDatabaseName("postgres")
-                                        .withPassword("${db.password}");
+                                        .withPassword("${db.password}")
+                                ;
 
                                 db.start();
                                 project.properties.setProperty('db.url', db.getJdbcUrl());
@@ -122,6 +123,7 @@
                 </dependencies>
             </plugin>
 
+<!--
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>sql-maven-plugin</artifactId>
@@ -155,6 +157,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
+-->
 
             <plugin>
                 <groupId>${org.jooq.groupId}</groupId>
@@ -179,9 +182,8 @@
                                 <database>
                                     <includes>.*</includes>
                                     <schemata>
-
                                         <schema>
-                                            <inputSchema>mcve</inputSchema>
+                                            <inputSchema>public</inputSchema>
                                         </schema>
                                     </schemata>
                                 </database>
