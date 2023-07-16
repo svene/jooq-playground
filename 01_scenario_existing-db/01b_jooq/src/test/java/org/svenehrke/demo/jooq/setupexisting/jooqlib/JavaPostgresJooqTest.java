@@ -3,11 +3,11 @@ package org.svenehrke.demo.jooq.setupexisting.jooqlib;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
-import org.jooq.mcve.java.postgres.tables.records.ActorRecord;
 import org.jooq.tools.JooqLogger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.svenehrke.demo.jooq.setupexisting.jooqlib.tables.records.ActorRecord;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.ResourceReaper;
@@ -19,9 +19,9 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Properties;
 
-import static org.jooq.mcve.java.postgres.Tables.ACTOR;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.svenehrke.demo.jooq.setupexisting.jooqlib.Tables.ACTOR;
 
 public class JavaPostgresJooqTest {
 
