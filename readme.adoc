@@ -1,0 +1,17 @@
+= 01 Scenario: existing DB
+
+== 01c sakila-service
+
+spring initilizer:
+- group: org.svenehrke
+- artifact: sakila.service
+- deps: spring web, postgres, testcontainer
+
+https://start.spring.io/#!type=maven-project&language=java&platformVersion=3.1.1&packaging=jar&jvmVersion=17&groupId=org.svenehrke&artifactId=sakila.service&name=sakila.service&description=Demo%20project%20for%20Spring%20Boot&packageName=org.svenehrke.sakila.service&dependencies=web,postgresql,testcontainers
+
+= 02 Scenario: new DB
+
+== 02c user-service
+- group: org.svenehrke
+- artifact: user.service
+- deps: spring web, flyway migrations?, postgres, testcontainer
