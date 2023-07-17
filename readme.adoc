@@ -5,9 +5,9 @@
 spring initilizer:
 - group: org.svenehrke
 - artifact: sakila.service
-- deps: spring web, postgres, testcontainer
+- deps: spring web, postgres, jooq, testcontainer
 
-https://start.spring.io/#!type=maven-project&language=java&platformVersion=3.1.1&packaging=jar&jvmVersion=17&groupId=org.svenehrke&artifactId=sakila.service&name=sakila.service&description=Demo%20project%20for%20Spring%20Boot&packageName=org.svenehrke.sakila.service&dependencies=web,postgresql,testcontainers
+https://start.spring.io/#!type=maven-project&language=java&platformVersion=3.1.1&packaging=jar&jvmVersion=17&groupId=org.svenehrke&artifactId=sakila.service&name=sakila.service&description=Demo%20project%20for%20Spring%20Boot&packageName=org.svenehrke.sakila.service&dependencies=web,postgresql,testcontainers,devtools,jooq
 
 = 02 Scenario: new DB
 
