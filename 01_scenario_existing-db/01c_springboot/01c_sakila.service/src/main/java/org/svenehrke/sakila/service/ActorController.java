@@ -18,9 +18,6 @@ import static org.svenehrke.demo.jooq.setupexisting.jooqlib.Tables.ACTOR;
 @RestController
 public class ActorController {
 
-//	@Autowired
-//	DataSource dataSource;
-
 	@Autowired
 	PostgreSQLContainer<?> db;
 
@@ -35,7 +32,6 @@ public class ActorController {
 		List<ActorWithFirstAndLastName> result = dsl.
 			select(ACTOR.FIRST_NAME, ACTOR.LAST_NAME).from(ACTOR).where(ACTOR.LAST_NAME.eq(lastName))
 			.fetchInto(ActorWithFirstAndLastName.class);
-//		return List.of("a", "b", "c");
 		return result.stream().map(ActorWithFirstAndLastName::lastName).toList();
 	}
 }
