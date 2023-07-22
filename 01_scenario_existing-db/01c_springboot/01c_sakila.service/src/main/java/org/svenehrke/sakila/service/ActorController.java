@@ -24,9 +24,9 @@ public class ActorController {
 	@GetMapping(value = "/actors", produces = "application/json")
 	public List<String> actors() throws SQLException {
 		var connection = dataSource.getConnection();
-		DSLContext dsl = DSL.using(connection, SQLDialect.POSTGRES);
+		DSLContext jooq = DSL.using(connection, SQLDialect.POSTGRES);
 		var lastName = "LOLLOBRIGIDA";
-		List<ActorWithFirstAndLastName> result = dsl.
+		List<ActorWithFirstAndLastName> result = jooq.
 			select(ACTOR.FIRST_NAME, ACTOR.LAST_NAME).from(ACTOR).where(ACTOR.LAST_NAME.eq(lastName))
 			.fetchInto(ActorWithFirstAndLastName.class);
 		return result.stream().map(ActorWithFirstAndLastName::lastName).toList();
