@@ -1,6 +1,7 @@
 package org.svenehrke.demo.jooq.setupexisting.jooqlib;
 
 import org.jooq.DSLContext;
+import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.jooq.tools.JooqLogger;
@@ -25,7 +26,7 @@ import static org.svenehrke.demo.jooq.setupexisting.jooqlib.Tables.ACTOR;
 public class JavaPostgresJooqTest {
 
 	static PostgreSQLContainer<?> db;
-	static DSLContext ctx;
+	static DSLContext jooq;
 	static Connection connection;
 	static JooqLogger log = JooqLogger.getLogger(JavaPostgresJooqTest.class);
 
@@ -57,7 +58,7 @@ public class JavaPostgresJooqTest {
 			System.getProperty("db.password")
 		);
 
-		ctx = DSL.using(connection, SQLDialect.POSTGRES);
+		jooq = DSL.using(connection, SQLDialect.POSTGRES);
 
 		// Use JDBC directly instead of jOOQ to avoid DEBUG logging all of this
 		try (Statement s = connection.createStatement()) {
@@ -74,13 +75,18 @@ public class JavaPostgresJooqTest {
 
 	// ====================================================================================
 
+	// See https://www.youtube.com/watch?v=ykoUBctblno , 23min00
 	@Test
-	public void t1() {
+	public void selectFrom() {
 		var lastName = "LOLLOBRIGIDA";
-		ActorRecord record = ctx.fetchOne(ACTOR, ACTOR.LAST_NAME.eq(lastName));
-		assertThat(record).isNotNull();
-		assertThat(record.getLastName()).isNotNull();
-		assertThat(record.getLastName()).isEqualTo(lastName);
+		Result<ActorRecord> records = jooq.selectFrom(ACTOR).fetch();
+		assertThat(records).hasSize(200);
+	}
+	@Test
+	public void fetchOne() {
+		var lastName = "LOLLOBRIGIDA";
+		ActorRecord record = jooq.fetchOne(ACTOR, ACTOR.LAST_NAME.eq(lastName));
+		assertThat(record).isNotNull().extracting(ActorRecord::getLastName).isNotNull().isEqualTo(lastName);
 	}
 
 	@Test
@@ -91,8 +97,10 @@ public class JavaPostgresJooqTest {
 			select(ACTOR.FIRST_NAME, ACTOR.LAST_NAME).from(ACTOR).where(ACTOR.LAST_NAME.eq(lastName))
 			.fetchInto(ActorWithFirstAndLastName.class);
 		assertThat(result).isNotNull();
-		assertThat(result.size()).isEqualTo(1);
-		assertThat(result.get(0).lastName()).isEqualTo(lastName);
-		assertThat(result.get(0).firstName()).isEqualTo("JOHNNY");
+		assertThat(result)
+			.hasSize(1)
+			.element(0)
+			.extracting(it -> "%s,%s".formatted(it.lastName(), it.firstName())).isEqualTo("LOLLOBRIGIDA,JOHNNY")
+		;
 	}
 }
