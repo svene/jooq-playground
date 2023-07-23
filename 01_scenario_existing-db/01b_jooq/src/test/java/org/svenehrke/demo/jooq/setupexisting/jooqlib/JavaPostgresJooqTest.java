@@ -4,9 +4,9 @@ import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.jooq.tools.JooqLogger;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.svenehrke.demo.jooq.setupexisting.jooqlib.tables.records.ActorRecord;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
@@ -19,8 +19,7 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.*;
 import static org.svenehrke.demo.jooq.setupexisting.jooqlib.Tables.ACTOR;
 
 public class JavaPostgresJooqTest {
@@ -30,7 +29,7 @@ public class JavaPostgresJooqTest {
 	static Connection connection;
 	static JooqLogger log = JooqLogger.getLogger(JavaPostgresJooqTest.class);
 
-	@BeforeClass
+	@BeforeAll
 	public static void init() throws SQLException {
 		if (System.getProperty("db.url") == null) {
 			db = new PostgreSQLContainer(
@@ -66,7 +65,7 @@ public class JavaPostgresJooqTest {
 		}
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void end() {
 		if (db != null) {
 			ResourceReaper.instance().stopAndRemoveContainer(db.getContainerId(), db.getDockerImageName());
@@ -79,9 +78,9 @@ public class JavaPostgresJooqTest {
 	public void t1() {
 		var lastName = "LOLLOBRIGIDA";
 		ActorRecord record = ctx.fetchOne(ACTOR, ACTOR.LAST_NAME.eq(lastName));
-		assertNotNull(record);
-		assertNotNull(record.getLastName());
-		assertEquals(lastName, record.getLastName());
+		assertThat(record).isNotNull();
+		assertThat(record.getLastName()).isNotNull();
+		assertThat(record.getLastName()).isEqualTo(lastName);
 	}
 
 	@Test
@@ -91,9 +90,9 @@ public class JavaPostgresJooqTest {
 		List<ActorWithFirstAndLastName> result = dsl.
 			select(ACTOR.FIRST_NAME, ACTOR.LAST_NAME).from(ACTOR).where(ACTOR.LAST_NAME.eq(lastName))
 			.fetchInto(ActorWithFirstAndLastName.class);
-		assertNotNull(result);
-		assertEquals(1, result.size());
-		assertEquals(lastName, result.get(0).lastName());
-		assertEquals("JOHNNY", result.get(0).firstName());
+		assertThat(result).isNotNull();
+		assertThat(result.size()).isEqualTo(1);
+		assertThat(result.get(0).lastName()).isEqualTo(lastName);
+		assertThat(result.get(0).firstName()).isEqualTo("JOHNNY");
 	}
 }
