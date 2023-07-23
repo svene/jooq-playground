@@ -1,12 +1,11 @@
 package org.svenehrke.demo.jooq.setupexisting.jooqlib;
 
-import org.jooq.DSLContext;
-import org.jooq.Result;
-import org.jooq.SQLDialect;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.tools.JooqLogger;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.svenehrke.demo.jooq.setupexisting.jooqlib.tables.records.ActorRecord;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -123,6 +122,15 @@ public class JavaPostgresJooqTest {
 		entity.setLastName("Ehrke");
 		entity.store();
 		assertThat(entity.getActorId()).isEqualTo(202);
+	}
+
+	@Test
+	@Disabled
+	public void schema() {
+		Queries ddl = jooq.ddl(Public.PUBLIC);
+		for (Query q: ddl.queries()) {
+			System.out.println(q);
+		}
 	}
 
 
