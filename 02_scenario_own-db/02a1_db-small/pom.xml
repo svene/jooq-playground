@@ -70,6 +70,8 @@
 
             <!-- Much better if there was a testcontainers lifecycle management plugin!
                  Upvote here if you like the idea: https://github.com/testcontainers/testcontainers-java/issues/4397 -->
+            <!-- generate-sources: execute: start postgres -->
+            <!-- test: execute: stop postgres -->
             <plugin>
                 <groupId>org.codehaus.gmaven</groupId>
                 <artifactId>groovy-maven-plugin</artifactId>
@@ -106,6 +108,7 @@
                 </dependencies>
             </plugin>
 
+            <!-- generate-sources: Flyway:migrate -->
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
