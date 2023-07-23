@@ -20,7 +20,7 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Properties;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.svenehrke.demo.jooq.setupexisting.jooqlib.Tables.ACTOR;
 
 public class JavaPostgresJooqTest {
@@ -90,17 +90,40 @@ public class JavaPostgresJooqTest {
 	}
 
 	@Test
-	public void t2() {
-		DSLContext dsl = DSL.using(connection, SQLDialect.POSTGRES);
+	public void select_with_projection() {
 		var lastName = "LOLLOBRIGIDA";
-		List<ActorWithFirstAndLastName> result = dsl.
+		List<ActorWithFirstAndLastName> result = jooq.
 			select(ACTOR.FIRST_NAME, ACTOR.LAST_NAME).from(ACTOR).where(ACTOR.LAST_NAME.eq(lastName))
 			.fetchInto(ActorWithFirstAndLastName.class);
 		assertThat(result).isNotNull();
 		assertThat(result)
 			.hasSize(1)
 			.element(0)
-			.extracting(it -> "%s,%s".formatted(it.lastName(), it.firstName())).isEqualTo("LOLLOBRIGIDA,JOHNNY")
+			.satisfies(it -> {
+				assertThat(it.lastName()).isEqualTo(lastName);
+				assertThat(it.firstName()).isEqualTo("JOHNNY");
+			})
 		;
 	}
+
+	@Test
+	public void insert_1() {
+		Long id = jooq.insertInto(ACTOR)
+			.columns(ACTOR.FIRST_NAME, ACTOR.LAST_NAME)
+			.values("Sven", "Ehrke")
+			.returningResult(ACTOR.ACTOR_ID)
+			.fetchOneInto(Long.class)
+			;
+		assertThat(id).isEqualTo(201);
+	}
+	@Test
+	public void insert_2() {
+		ActorRecord entity = jooq.newRecord(ACTOR);
+		entity.setFirstName("Sven");
+		entity.setLastName("Ehrke");
+		entity.store();
+		assertThat(entity.getActorId()).isEqualTo(202);
+	}
+
+
 }
